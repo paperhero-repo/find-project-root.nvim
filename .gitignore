@@ -1,0 +1,56 @@
+# Neovim plugin development
+tags
+luacheck.*
+*.rockspec
+.stylua.toml
+
+# Editor specific
+.nvimrc
+*.swp
+*.un~
+*~
+*.bak
+.session
+netrwhist
+
+# Lua development
+luarocks/
+luarocks.lock
+.luarc.json
+
+# Testing
+test/logs/
+test/results/
+.coverage
+.coverage.lcov
+
+# Documentation
+doc/
+*.html
+
+# Dependency directories
+lua_modules/
+
+# OS generated
+.DS_Store
+.DS_Store?
+*.lock
+._*
+.Spotlight-V100
+.Trashes
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Node.js (optional)
+node_modules/
+package-lock.json

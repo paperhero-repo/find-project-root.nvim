@@ -1,0 +1,1 @@
+# find-project-root.nvim
