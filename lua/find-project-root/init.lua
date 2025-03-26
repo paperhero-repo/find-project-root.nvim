@@ -36,14 +36,22 @@ function detect_project_root(config)
 	return find_root(start_path) or start_path
 end
 
+function find_project_root()
+	local root = detect_project_root(config)
+	vim.cmd("cd " .. vim.fn.fnameescape(root))
+	print("Changed directory to: " .. root)
+end
+
 function M.setup(user_configs)
 	config = vim.tbl_deep_extend("keep", user_configs or {}, default_config)
 
-	vim.api.nvim_create_user_command("FindProjectRoot", function()
-		local root = detect_project_root(config)
-		vim.cmd("cd " .. vim.fn.fnameescape(root)) -- 공백 추가
-		print("Changed directory to: " .. root) -- 오타 수정
-	end, {})
+	vim.api.nvim_create_user_command("FindProjectRoot", find_project_root, {})
+
+	if user_configs.trigger_event then
+		for _, val in pairs(user_configs.trigger_event) do
+			vim.api.nvim_create_user_command(val, find_project_root, {})
+		end
+	end
 end
 
 return M
