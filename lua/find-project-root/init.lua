@@ -1,7 +1,5 @@
 local M = {}
 
-local config = {}
-
 local default_config = {
 	markers = {
 		".git",
@@ -12,9 +10,10 @@ local default_config = {
 		"Cargo.toml", -- rust
 		"build.gradle", -- Java
 	},
+	trigger_event = nil,
 }
 
-function detect_project_root()
+function detect_project_root(config)
 	-- 현재 버퍼의 파일 경로 기반으로 시작 위치 결정
 	local current_buf_path = vim.api.nvim_buf_get_name(0)
 	local start_path = current_buf_path ~= "" and vim.fn.fnamemodify(current_buf_path, ":p:h") or vim.fn.getcwd()
@@ -38,23 +37,25 @@ function detect_project_root()
 	return find_root(start_path) or start_path
 end
 
-function find_project_root()
-	local root = detect_project_root()
+function find_project_root(config)
+	local root = detect_project_root(config)
 	vim.cmd("cd " .. vim.fn.fnameescape(root))
 	print("Changed directory to: " .. root)
 end
 
 function M.setup(user_configs)
-	config = vim.tbl_deep_extend("keep", user_configs or {}, default_config)
+	local config = vim.tbl_deep_extend("keep", user_configs or {}, default_config)
 
 	vim.api.nvim_create_user_command("FindProjectRoot", function()
 		find_project_root()
 	end, {})
 
 	if config.trigger_event then
-		vim.api.nvim_create_user_command(config.trigger_event, {
+		vim.api.nvim_create_autocmd(config.trigger_event, {
 			pattern = "*",
-			callback = M.find_project_root,
+			callback = function()
+				find_project_root(config)
+			end,
 		})
 	end
 end
